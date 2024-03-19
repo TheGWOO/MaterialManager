@@ -1,0 +1,20 @@
+{
+  "name": "com.thegwoo.materialmanager",
+  "version": "2.0",
+  "displayName": "Material Manager",
+  "description": "Unity Material Manager tool",
+  "unity": "2022.3",
+  "unityRelease": "0b5",
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "dependencies": {
+  },
+  "keywords": [
+  ],
+  "author": {
+    "name": "GWOO",
+    "email": "gaetan.gwoo@gmail.com",
+    "url": ""
+  }
+}
