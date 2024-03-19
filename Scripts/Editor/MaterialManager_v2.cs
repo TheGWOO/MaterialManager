@@ -38,8 +38,7 @@ public class MaterialManager_v2 : EditorWindow
     private const double DelayDuration = 1;
     private const string DefaultSearchField = "Search materials...";
     private const string DefaultFolderPath = "Assets";
-
-
+    
     #endregion
     #region UI-TOOLKIT VARIABLES
 
@@ -93,11 +92,11 @@ public class MaterialManager_v2 : EditorWindow
     
     private void CreateGUI()
     {
-        if (!EditorApplication.isUpdating)
+        if (!EditorApplication.isUpdating) // Required to prevent import errors via PackageManager
         {
-            var visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
+            VisualTreeAsset visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
             visualTree.CloneTree(rootVisualElement);
-            var root = rootVisualElement.ElementAt(0);
+            VisualElement root = rootVisualElement.ElementAt(0);
 
             // ASSIGN ELEMENTS
             m_shaderField = root.Q<ObjectField>("shader-field");
@@ -156,12 +155,11 @@ public class MaterialManager_v2 : EditorWindow
         LoadSettings();
         
         // SHADER TO FIND
-        if (m_shaderField.value != null)
+        if (m_shaderField.value != null) // FindMaterials on tool start if any shader had been saved
         {
-            m_shaderField.value = m_shaderField.value;
             FindMaterials();
         }
-        else
+        else // If no shader had been saved sets everything has disabled by default
         {
             m_findMaterialsButton.SetEnabled(false);
             m_selectAllButton.SetEnabled(false);
@@ -171,12 +169,10 @@ public class MaterialManager_v2 : EditorWindow
         
         // SEARCH FIELD
         m_searchField.value = DefaultSearchField;
+        // Find internal child and sets up its default class as placeholder
         m_searchFieldText = FindChild(m_searchField, "unity-text-element");
-        if (m_searchFieldText != null)
-        {
-            m_searchFieldText.RemoveFromClassList("unity-text-element");
-            m_searchFieldText.AddToClassList("search-field-placeholder");
-        }
+        m_searchFieldText.RemoveFromClassList("unity-text-element");
+        m_searchFieldText.AddToClassList("search-field-placeholder");
     }
     
     #region CALLBACKS
@@ -229,8 +225,9 @@ public class MaterialManager_v2 : EditorWindow
 
     private void SearchField_FocusIn(FocusInEvent evt)
     {
-        if (m_searchField.value == DefaultSearchField)
+        if (m_searchField.value == DefaultSearchField) // On FocusIn check if there is default text or user search
         {
+            // If default search then remove it and sets its class to user search one
             m_ignoreSearchField = true;
             m_searchField.value = "";
             m_searchFieldText.RemoveFromClassList("search-field-placeholder");
@@ -240,16 +237,13 @@ public class MaterialManager_v2 : EditorWindow
 
     private void SearchField_FocusOut(FocusOutEvent evt)
     {
-        if (string.IsNullOrEmpty(m_searchField.value)) {
+        if (string.IsNullOrEmpty(m_searchField.value))  // On FocusOut check if search field is blank
+        {
+            // If blank then resets to default class and value
             m_ignoreSearchField = true;
             m_searchField.value = DefaultSearchField;
             m_searchFieldText.AddToClassList("search-field-placeholder");
             m_searchFieldText.RemoveFromClassList("unity-text-element");
-        }
-        else
-        {
-            m_searchFieldText.RemoveFromClassList("search-field-placeholder");
-            m_searchFieldText.AddToClassList("unity-text-element");
         }
     }
 
@@ -470,7 +464,7 @@ public class MaterialManager_v2 : EditorWindow
     
     #region FIND MATERIALS
 
-    void FindMaterials()
+    private void FindMaterials()
     {
         AssetDatabase.Refresh();
         FindMaterial_Clear();
