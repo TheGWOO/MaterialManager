@@ -1,0 +1,16 @@
+:root {
+    --dark-gray: rgb(35, 36, 40);
+    --medium-gray: rgb(43, 45, 49);
+    --light-gray: rgb(56, 58, 64);
+    
+    --white: rgb(207, 210, 214);
+    --medium-white: rgb(148, 155, 164);
+    
+    --light-blue: rgb(71, 82, 196);
+    --medium-blue: rgb(60, 69, 165);
+    --half-blue: rgba(71, 82, 196, 0.2);
+    
+    --transparent: rgba(0, 0, 0, 0);
+
+    background-color: var(--medium-gray);
+}

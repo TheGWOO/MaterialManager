@@ -1,0 +1,160 @@
+@import url('project://database/Assets/MATERIAL%20MANAGER/Resources/Style/DarkPalette_Style.uss?fileID=7433441132597879392&guid=58f4bea2ddd34353bb4ff9ece3bf575b&type=3#DarkPalette_Style');
+.unity-group-box {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 5px;
+    padding-right: 3px;
+    padding-bottom: 5px;
+    padding-left: 3px;
+}
+
+.big-button {
+    height: 35px;
+    width: 75%;
+    align-self: center;
+    transition-timing-function: ease-out-elastic;
+    transition-duration: 0.5s;
+    transition-property: scale;
+}
+
+.big-button:hover {
+    scale: 1.1 1.1;
+}
+
+.big-button:disabled:hover {
+    scale: 1 1;
+}
+
+.big-button:active {
+    scale: 1.05 1.05;
+}
+
+.separator {
+    height: 1px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: var(--dark-gray);
+}
+
+.content-box {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.search-field-placeholder {
+    opacity: 0.5;
+    font-size: 13px;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Lato/Lato-Italic%20SDF.asset?fileID=11400000&guid=c86034c92d41eee4b9fdc73ed982db9c&type=2#Lato-Italic SDF');
+}
+
+.unity-bg-color {
+    background-color: var(--unity-colors-default-background);
+}
+
+.unity-button {
+    background-color: var(--light-gray);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    min-height: 25px;
+}
+
+.unity-button:hover {
+    background-color: var(--light-blue);
+}
+
+.unity-button:disabled {
+    background-color: rgb(49, 51, 56);
+    opacity: 0.5;
+}
+
+.unity-button:disabled:hover {
+}
+
+.unity-button:active {
+    background-color: var(--medium-blue);
+    border-left-color: var(--transparent);
+    border-right-color: var(--transparent);
+    border-top-color: var(--transparent);
+    border-bottom-color: var(--transparent);
+}
+
+.unity-base-text-field__input {
+    background-color: var(--dark-gray);
+}
+
+.unity-object-field__selector {
+}
+
+.unity-base-popup-field__input {
+    background-color: var(--light-gray);
+}
+
+.unity-base-field__input:hover {
+    background-color: var(--half-blue);
+    border-top-color: var(--light-blue);
+    border-right-color: var(--light-blue);
+    border-bottom-color: var(--light-blue);
+    border-left-color: var(--light-blue);
+}
+
+Toggle:checked:hover .unity-toggle__checkmark {
+    background-image: resource('toggle_checkmark');
+    -unity-background-image-tint-color: var(--medium-blue);
+}
+
+Toggle:checked .unity-toggle__checkmark {
+    background-image: resource('toggle_checkmark');
+    -unity-background-image-tint-color: var(--light-blue);
+}
+
+Toggle:hover .unity-toggle__checkmark {
+    border-top-width: 0.5px;
+    border-right-width: 0.5px;
+    border-bottom-width: 0.5px;
+    border-left-width: 0.5px;
+}
+
+Toggle .unity-toggle__checkmark {
+    border-left-color: var(--light-gray);
+    border-right-color: var(--light-gray);
+    border-top-color: var(--light-gray);
+    border-bottom-color: var(--light-gray);
+    background-image: none;
+    background-color: var(--dark-gray);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.unity-base-slider__dragger {
+    background-color: var(--dark-gray);
+}
+
+.unity-text-element {
+    color: var(--white);
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Lato/Lato-Bold%20SDF.asset?fileID=11400000&guid=75b12ca70b964f940b858b1bc6b94a62&type=2#Lato-Bold SDF');
+    font-size: 13px;
+}
+
+.unity-label {
+    color: var(--medium-white);
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Roboto/Roboto-Regular%20SDF.asset?fileID=11400000&guid=7eb4cee08764e244f8a32f324300a6ff&type=2#Roboto-Regular SDF');
+}
+
+.unity-object-field-display {
+    background-color: var(--dark-gray);
+}
+
+.unity-object-field__selector {
+    background-color: var(--medium-gray);
+    -unity-background-image-tint-color: var(--white);
+}
+
+.unity-object-field__selector:hover {
+    background-color: var(--medium-blue);
+}

@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/MATERIAL%20MANAGER/Resources/Style/MaterialManager_Style.uss?fileID=7433441132597879392&amp;guid=b79a7f53b39da9d4d86a4e41828cce4a&amp;type=3#MaterialManager_Style" />
+    <ui:VisualElement name="Root" style="width: 100%; height: 100%; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
+        <ui:VisualElement class="unity-group-box" style="align-items: center; flex-direction: row; justify-content: space-around;">
+            <ui:Label tabindex="-1" text="Select property to filter" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; flex-grow: 1;" />
+            <ui:Button text="⋮" parse-escape-sequences="true" display-tooltip-when-elided="true" name="options-menu-button" focusable="false" style="font-size: 20px;" />
+        </ui:VisualElement>
+        <ui:VisualElement class="unity-group-box" style="flex-shrink: 1;">
+            <ui:ScrollView name="properties-scrollview" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
