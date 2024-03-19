@@ -93,59 +93,62 @@ public class MaterialManager_v2 : EditorWindow
     
     private void CreateGUI()
     {
-        var visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
-        visualTree.CloneTree(rootVisualElement);
-        var root = rootVisualElement.ElementAt(0);
+        if (!EditorApplication.isUpdating)
+        {
+            var visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
+            visualTree.CloneTree(rootVisualElement);
+            var root = rootVisualElement.ElementAt(0);
 
-        // ASSIGN ELEMENTS
-        m_shaderField = root.Q<ObjectField>("shader-field");
-        m_findMaterialsButton = root.Q<Button>("find-materials-button");
-        m_materialsScrollview = root.Q<ScrollView>("materials-scrollview");
-        m_searchField = root.Q<TextField>("search-field");
-        m_showVariantsToggle = root.Q<Toggle>("show-variants-toggle");
-        m_clearSearchButton = root.Q<Button>("clear-search-button");
-        m_reparentButton = root.Q<Button>("reparent-button");
-        m_materialsCountLabel = root.Q<Label>("stat-materials-count-label");
-        m_variantsCountLabel = root.Q<Label>("stat-variant-count-label");
-        m_reparentCountLabel = root.Q<Label>("stat-reparent-count-label");
-        m_statsSection = root.Q<VisualElement>("stats-section");
-        m_selectAllButton = root.Q<Button>("select-all-button");
-        m_selectVisibleButton = root.Q<Button>("select-visible-button");
-        m_filterPropertyButton = root.Q<Button>("filter-property-button");
-        m_clearFilteredPropertyButton = root.Q<Button>("clear-filter-property-button");
-        m_filtersSection = root.Q<VisualElement>("filters-section");
-        m_searchInDropdown = root.Q<DropdownField>("search-in-dropdown");
-        m_folderPathSection = root.Q<VisualElement>("folder-path-section");
-        m_reparentButtonSection = root.Q<VisualElement>("reparent-button-section");
-        m_newShaderField = root.Q<ObjectField>("new-shader-field");
-        m_reparentToggle = root.Q<Toggle>("reparent-toggle");
-        m_folderBrowseButton = root.Q<Button>("folder-browse-button");
-        m_folderDefaultButton = root.Q<Button>("folder-default-button");
-        m_folderPathLabel = root.Q<Label>("folder-path-label");
-  
-        // CALLBCKS
-        m_shaderField.RegisterValueChangedCallback(ShaderField_Changed);
-        m_newShaderField.RegisterValueChangedCallback(NewShaderField_Changed);
-        m_searchField.RegisterValueChangedCallback(SearchField_Changed);
-        m_showVariantsToggle.RegisterValueChangedCallback(ShowVariantsToggle_Changed);
-        m_searchInDropdown.RegisterValueChangedCallback(SearchIn_Changed);
-        
-        // EVENTS
-        m_findMaterialsButton.clicked += FindMaterials;
-        m_reparentButton.clicked += ReparentMaterialsToNewShader;
-        m_clearSearchButton.clicked += ClearSearchButton;
-        m_selectVisibleButton.clicked += SelectVisibleMaterialsButton;
-        m_selectAllButton.clicked += SelectAllMaterialsButton;
-        m_filterPropertyButton.clicked += OpenPropertyButtonFilter;
-        m_clearFilteredPropertyButton.clicked += ClearFilteredPropertyButton;
-        m_folderBrowseButton.clicked += BrowseFolderPathButton;
-        m_folderDefaultButton.clicked += DefaultFolderPathButton;
-        
-        m_searchField.RegisterCallback<FocusInEvent>(SearchField_FocusIn);
-        m_searchField.RegisterCallback<FocusOutEvent>(SearchField_FocusOut);
-        
-        //INIT
-        InitGUI();
+            // ASSIGN ELEMENTS
+            m_shaderField = root.Q<ObjectField>("shader-field");
+            m_findMaterialsButton = root.Q<Button>("find-materials-button");
+            m_materialsScrollview = root.Q<ScrollView>("materials-scrollview");
+            m_searchField = root.Q<TextField>("search-field");
+            m_showVariantsToggle = root.Q<Toggle>("show-variants-toggle");
+            m_clearSearchButton = root.Q<Button>("clear-search-button");
+            m_reparentButton = root.Q<Button>("reparent-button");
+            m_materialsCountLabel = root.Q<Label>("stat-materials-count-label");
+            m_variantsCountLabel = root.Q<Label>("stat-variant-count-label");
+            m_reparentCountLabel = root.Q<Label>("stat-reparent-count-label");
+            m_statsSection = root.Q<VisualElement>("stats-section");
+            m_selectAllButton = root.Q<Button>("select-all-button");
+            m_selectVisibleButton = root.Q<Button>("select-visible-button");
+            m_filterPropertyButton = root.Q<Button>("filter-property-button");
+            m_clearFilteredPropertyButton = root.Q<Button>("clear-filter-property-button");
+            m_filtersSection = root.Q<VisualElement>("filters-section");
+            m_searchInDropdown = root.Q<DropdownField>("search-in-dropdown");
+            m_folderPathSection = root.Q<VisualElement>("folder-path-section");
+            m_reparentButtonSection = root.Q<VisualElement>("reparent-button-section");
+            m_newShaderField = root.Q<ObjectField>("new-shader-field");
+            m_reparentToggle = root.Q<Toggle>("reparent-toggle");
+            m_folderBrowseButton = root.Q<Button>("folder-browse-button");
+            m_folderDefaultButton = root.Q<Button>("folder-default-button");
+            m_folderPathLabel = root.Q<Label>("folder-path-label");
+
+            // CALLBCKS
+            m_shaderField.RegisterValueChangedCallback(ShaderField_Changed);
+            m_newShaderField.RegisterValueChangedCallback(NewShaderField_Changed);
+            m_searchField.RegisterValueChangedCallback(SearchField_Changed);
+            m_showVariantsToggle.RegisterValueChangedCallback(ShowVariantsToggle_Changed);
+            m_searchInDropdown.RegisterValueChangedCallback(SearchIn_Changed);
+
+            // EVENTS
+            m_findMaterialsButton.clicked += FindMaterials;
+            m_reparentButton.clicked += ReparentMaterialsToNewShader;
+            m_clearSearchButton.clicked += ClearSearchButton;
+            m_selectVisibleButton.clicked += SelectVisibleMaterialsButton;
+            m_selectAllButton.clicked += SelectAllMaterialsButton;
+            m_filterPropertyButton.clicked += OpenPropertyButtonFilter;
+            m_clearFilteredPropertyButton.clicked += ClearFilteredPropertyButton;
+            m_folderBrowseButton.clicked += BrowseFolderPathButton;
+            m_folderDefaultButton.clicked += DefaultFolderPathButton;
+
+            m_searchField.RegisterCallback<FocusInEvent>(SearchField_FocusIn);
+            m_searchField.RegisterCallback<FocusOutEvent>(SearchField_FocusOut);
+
+            //INIT
+            InitGUI();
+        }
     }
 
     private void InitGUI()

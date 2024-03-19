@@ -25,16 +25,19 @@ public class ShaderPropertyFilter_v2 : EditorWindow
 
     public void CreateGUI()
     {
-        // Charge le document UXML depuis le dossier Resources
-        var visualTree = Resources.Load<VisualTreeAsset>("UIDocument/ShaderPropertyFilter");
-        visualTree.CloneTree(rootVisualElement);
+        if (!EditorApplication.isUpdating)
+        {
+            // Charge le document UXML depuis le dossier Resources
+            var visualTree = Resources.Load<VisualTreeAsset>("UIDocument/ShaderPropertyFilter");
+            visualTree.CloneTree(rootVisualElement);
 
-        // Assignations
-        m_optionsMenuButton = rootVisualElement.Q<Button>("options-menu-button");
-        m_propertiesScrollview = rootVisualElement.Q<ScrollView>("properties-scrollview");
+            // Assignations
+            m_optionsMenuButton = rootVisualElement.Q<Button>("options-menu-button");
+            m_propertiesScrollview = rootVisualElement.Q<ScrollView>("properties-scrollview");
 
-        // Configurations
-        SetupOptionsMenuButton();
+            // Configurations
+            SetupOptionsMenuButton();
+        }
     }
 
     private void SetupOptionsMenuButton()
