@@ -551,23 +551,20 @@ namespace MaterialManager.Scripts.Editor
 
         private void ReparentMaterialsToNewShader()
         {
-            // m_materialsReparentedCount = 0;
-            //
-            // if (m_reparentToggle.value)
-            // {
-            //     VisibleMaterials();
-            // }
-            //
-            // FindAncestors();
-            // ReparentAncestors();
-            //
-            // Selection.objects = m_toRefresh.ToArray();
-            // m_showReparentedMaterials = true;
-            // m_delayStartTime = EditorApplication.timeSinceStartup;
-            // EditorApplication.update += DelayRefresh;
-
-
-            ShaderPropertyRebind.ShowWindow(m_shaderField.value, m_newShaderField.value);
+            m_materialsReparentedCount = 0;
+            
+            if (m_reparentToggle.value)
+            {
+                VisibleMaterials();
+            }
+            
+            FindAncestors();
+            ReparentAncestors();
+            
+            Selection.objects = m_toRefresh.ToArray();
+            m_showReparentedMaterials = true;
+            m_delayStartTime = EditorApplication.timeSinceStartup;
+            EditorApplication.update += DelayRefresh;
         }
 
         private void FindAncestors()

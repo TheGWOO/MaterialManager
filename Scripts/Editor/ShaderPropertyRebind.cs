@@ -17,7 +17,7 @@ namespace MaterialManager.Scripts.Editor
         
         public static void ShowWindow(Object sourceShader, Object targetShader)
         {
-            ShaderPropertyRebind wnd = GetWindow<ShaderPropertyRebind>("Shader Property Rebind");
+            ShaderPropertyRebind wnd = GetWindow<ShaderPropertyRebind>("Properties Rebind");
             wnd.m_shaderSource = sourceShader as Shader;
             wnd.m_shaderTarget = targetShader as Shader;
             wnd.Show();
@@ -86,7 +86,7 @@ namespace MaterialManager.Scripts.Editor
             }
         }
         
-        private int FindPropertyIndex(Shader shader, string reference)
+        private static int FindPropertyIndex(Shader shader, string reference)
         {
             int propertyCount = ShaderUtil.GetPropertyCount(shader);
             for (int i = 0; i < propertyCount; i++)
@@ -99,7 +99,6 @@ namespace MaterialManager.Scripts.Editor
         
         private static void PropertySourceClicked()
         {
-            
         }
         private void PropertyTargetClicked(Button button, ShaderUtil.ShaderPropertyType type)
         {
