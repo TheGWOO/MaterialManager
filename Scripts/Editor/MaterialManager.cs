@@ -63,6 +63,7 @@ namespace MaterialManager.Scripts.Editor
         private Button m_reparentButton;
         private Button m_folderBrowseButton;
         private Button m_folderDefaultButton;
+        private Button m_rebindPropertiesButton;
         // TOGGLE
         private Toggle m_showVariantsToggle;
         private Toggle m_reparentToggle;
@@ -124,6 +125,7 @@ namespace MaterialManager.Scripts.Editor
                 m_folderBrowseButton = root.Q<Button>("folder-browse-button");
                 m_folderDefaultButton = root.Q<Button>("folder-default-button");
                 m_folderPathLabel = root.Q<Label>("folder-path-label");
+                m_rebindPropertiesButton = root.Q<Button>("rebind-properties-button");
 
                 // CALLBCKS
                 m_shaderField.RegisterValueChangedCallback(ShaderField_Changed);
@@ -142,6 +144,7 @@ namespace MaterialManager.Scripts.Editor
                 m_clearFilteredPropertyButton.clicked += ClearFilteredPropertyButton;
                 m_folderBrowseButton.clicked += BrowseFolderPathButton;
                 m_folderDefaultButton.clicked += DefaultFolderPathButton;
+                m_rebindPropertiesButton.clicked += RebindPropertiesButton;
 
                 m_searchField.RegisterCallback<FocusInEvent>(SearchField_FocusIn);
                 m_searchField.RegisterCallback<FocusOutEvent>(SearchField_FocusOut);
@@ -565,6 +568,12 @@ namespace MaterialManager.Scripts.Editor
             m_showReparentedMaterials = true;
             m_delayStartTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += DelayRefresh;
+        }
+
+        private void RebindPropertiesButton()
+        {
+            ShaderPropertyRebind.ShowWindow(m_shaderField.value, m_newShaderField.value);
+            Debug.Log(ShaderPropertyRebind.ReboundRefs.Count);
         }
 
         private void FindAncestors()

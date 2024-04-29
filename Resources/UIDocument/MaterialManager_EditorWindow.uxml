@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/MATERIAL%20MANAGER/Resources/Style/MaterialManager_Style.uss?fileID=7433441132597879392&amp;guid=b79a7f53b39da9d4d86a4e41828cce4a&amp;type=3#MaterialManager_Style" />
+    <Style src="project://database/Assets/MaterialManager/Resources/Style/MaterialManager_Style.uss?fileID=7433441132597879392&amp;guid=b79a7f53b39da9d4d86a4e41828cce4a&amp;type=3#MaterialManager_Style" />
     <ui:VisualElement name="Canva" style="align-items: stretch; justify-content: space-between; flex-shrink: 0; width: 100%; height: 100%; padding-top: 10px; padding-bottom: 10px;">
         <ui:VisualElement name="Header" style="margin-bottom: 10px; flex-shrink: 0;">
             <ui:VisualElement name="Search-in-section" class="content-box" style="flex-shrink: 0;">
@@ -54,11 +54,14 @@
                 <ui:VisualElement name="Separator" class="separator" style="height: 2px;" />
                 <ui:VisualElement name="new-shader-field-section" class="content-box" style="color: rgb(238, 238, 238);">
                     <uie:ObjectField label="New shader" name="new-shader-field" allow-scene-objects="false" type="UnityEngine.Shader, UnityEngine.CoreModule" focusable="false" style="margin-right: 10px; margin-left: 10px;" />
-                    <ui:VisualElement name="reparent-button-section" style="width: 75%; align-items: flex-end; align-self: center; display: none;">
+                    <ui:VisualElement name="reparent-button-section" style="align-items: center; align-self: center; display: flex; width: 75%;">
                         <ui:Button text="Reparent materials to new shader" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reparent-button" focusable="false" class="big-button" style="margin-right: 5px; margin-left: 5px; margin-top: 5px; margin-bottom: 5px; width: 100%;" />
-                        <ui:VisualElement name="reparent-toggle-section" style="flex-direction: row;">
-                            <ui:Toggle name="reparent-toggle" />
-                            <ui:Label text="Reparent only visible" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        <ui:VisualElement name="reparent-options" style="flex-grow: 1; flex-direction: row; align-items: center; justify-content: flex-start;">
+                            <ui:Button text="Rebind properties" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rebind-properties-button" focusable="false" style="flex-shrink: 1; flex-grow: 1; width: 50%;" />
+                            <ui:VisualElement name="reparent-toggle-section" style="flex-direction: row; justify-content: space-around; flex-shrink: 1; width: 50%;">
+                                <ui:Toggle name="reparent-toggle" />
+                                <ui:Label text="Reparent only visible" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>

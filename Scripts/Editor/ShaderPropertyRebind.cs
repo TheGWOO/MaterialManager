@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,7 @@ namespace MaterialManager.Scripts.Editor
     {
         private Shader m_shaderSource;
         private Shader m_shaderTarget;
+        public static Dictionary<string, string> ReboundRefs { get; private set; } = new();
         
         // UI ELEMENTS
         private VisualElement m_propertiesScrollviewContainer;
@@ -50,6 +52,7 @@ namespace MaterialManager.Scripts.Editor
             }
         
             m_propertiesScrollviewContainer.Clear();
+            ReboundRefs.Clear();
             VisualElement scrollViewContainerSource = new();
             scrollViewContainerSource.style.flexGrow = 1;
             VisualElement scrollViewContainerTarget = new();
@@ -61,8 +64,7 @@ namespace MaterialManager.Scripts.Editor
             for (int i = 0; i < propertyCount; i++)
             {
                 string propertyDisplayName = ShaderUtil.GetPropertyDescription(m_shaderSource, i);
-                if (!ShowAllProperties &&
-                    (propertyDisplayName.StartsWith("_") || propertyDisplayName.StartsWith("unity"))) continue;
+                if (!ShowProperty(propertyDisplayName)) continue;
                 string propertyName = ShaderUtil.GetPropertyName(m_shaderSource, i);
                 ShaderUtil.ShaderPropertyType propertyType = ShaderUtil.GetPropertyType(m_shaderSource, i);
 
@@ -73,7 +75,7 @@ namespace MaterialManager.Scripts.Editor
 
                 // TARGET PROPERTY BUTTON
                 Button propertyButtonTarget = new() { text = "", focusable = false };
-                propertyButtonTarget.clicked += () => PropertyTargetClicked(propertyButtonTarget, propertyType);
+                propertyButtonTarget.clicked += () => PropertyTargetClicked(propertyButtonTarget, propertyType, propertyName);
                 int targetIndex = FindPropertyIndex(m_shaderTarget, propertyName);
                 if (targetIndex != -1)
                 {
@@ -82,6 +84,7 @@ namespace MaterialManager.Scripts.Editor
                     propertyButtonTarget.text = propertyDisplayNameTarget;
                 }
 
+                ReboundRefs.Add(propertyDisplayName, propertyDisplayName);
                 scrollViewContainerTarget.Add(propertyButtonTarget);
             }
         }
@@ -100,7 +103,7 @@ namespace MaterialManager.Scripts.Editor
         private static void PropertySourceClicked()
         {
         }
-        private void PropertyTargetClicked(Button button, ShaderUtil.ShaderPropertyType type)
+        private void PropertyTargetClicked(Button button, ShaderUtil.ShaderPropertyType type, string initialRef)
         {
             // Debug.Log(type);
             GenericMenu menu = new();
@@ -112,17 +115,17 @@ namespace MaterialManager.Scripts.Editor
             {
                 if (!IsTypeMatching(type, ShaderUtil.GetPropertyType(m_shaderTarget, i))) continue;
                 string propertyDisplayName = ShaderUtil.GetPropertyDescription(m_shaderTarget, i);
-                if (ShowProperty(propertyDisplayName))
-                {
-                    menu.AddItem(new GUIContent(propertyDisplayName), false, () => SetPropertyBind(button, propertyDisplayName));
-                }
+                if (!ShowProperty(propertyDisplayName)) continue;
+                string propertyName = ShaderUtil.GetPropertyName(m_shaderTarget, i);
+                menu.AddItem(new GUIContent(propertyDisplayName), false, () => SetPropertyBind(button, propertyDisplayName));
+                ReboundRefs[initialRef] = propertyName;
             }
             menu.ShowAsContext();
         }
 
-        private static void SetPropertyBind(Button button, string reference)
+        private static void SetPropertyBind(Button button, string displayName)
         {
-            button.text = reference;
+            button.text = displayName;
         }
         
         protected override void ShowOptionsMenu()
