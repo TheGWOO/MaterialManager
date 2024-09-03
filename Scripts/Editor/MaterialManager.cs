@@ -25,12 +25,15 @@ namespace MaterialManager.Scripts.Editor
         private int m_materialsReparentedCount;
         private int m_variantsFilteredCount;
         private string m_shaderAssetPath;
+
+        private Dictionary<string, object> m_TestPropertiesDic;
     
         #endregion
         #region STATES VARIABLES
 
         private bool m_showReparentedMaterials;
         private bool m_ignoreSearchField = true;
+        private bool m_skipClear;
 
         #endregion
         #region SETTINGS VARIABLES
@@ -91,7 +94,7 @@ namespace MaterialManager.Scripts.Editor
         {
             SaveSettings();
         }
-    
+        
         private void CreateGUI()
         {
             if (!EditorApplication.isUpdating) // Required to prevent import errors via PackageManager
@@ -201,8 +204,14 @@ namespace MaterialManager.Scripts.Editor
     
         private void ShaderField_Changed(ChangeEvent<Object> evt)
         {
+            Debug.LogWarning("Shader changed");
             m_findMaterialsButton.SetEnabled(m_shaderField.value != null);
             DisplayUIElement(m_reparentButtonSection, m_newShaderField.value != null && m_shaderField.value != null);
+            if (m_skipClear)
+            {
+                m_skipClear = false;
+                return;
+            }
             FindMaterial_Clear();
         }
     
@@ -398,7 +407,9 @@ namespace MaterialManager.Scripts.Editor
         }
 
         #endregion
-    
+
+        #region VISUAL ELEMENTS
+
         private VisualElement FindChild(VisualElement parent, string ussClass)
         {
             Stack<VisualElement> stack = new Stack<VisualElement>();
@@ -428,6 +439,8 @@ namespace MaterialManager.Scripts.Editor
                 element.style.display = displayed ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
+
+        #endregion
     
         #region MATERIAL FILTERS
 
@@ -573,7 +586,7 @@ namespace MaterialManager.Scripts.Editor
         private void RebindPropertiesButton()
         {
             ShaderPropertyRebind.ShowWindow(m_shaderField.value, m_newShaderField.value);
-            Debug.Log(ShaderPropertyRebind.ReboundRefs.Count);
+            Debug.Log("Found " + ShaderPropertyRebind.ReboundRefs.Count + " properties to rebind");
         }
 
         private void FindAncestors()
@@ -657,6 +670,25 @@ namespace MaterialManager.Scripts.Editor
             m_showVariantsToggle.value = EditorPrefs.GetBool("ShaderManager_FilterState", true);
         
             m_searchInDropdown.index = EditorPrefs.GetInt("ShaderManager_SearchInOption", 0);
+        }
+
+        #endregion
+
+        #region PUBLIC METHODS
+
+        public void FindByShader(Shader shader)
+        {
+            if (shader == null) return;
+            
+            m_searchInDropdown.index = 1;
+            
+            if (m_shaderField.value != shader)
+            {
+                m_skipClear = true;
+                m_shaderField.value = shader;
+            }
+
+            FindMaterials();
         }
 
         #endregion
