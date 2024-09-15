@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace MaterialManager.Scripts.Editor
+namespace GWOO.Tools
 {
     public class ShaderPropertyFilter : EditorWindow
     {

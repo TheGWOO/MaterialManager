@@ -7,38 +7,38 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace MaterialManager.Scripts.Editor
+namespace GWOO.Tools
 {
     public class MaterialManager : EditorWindow
     {
         #region DATA VARIABLES
     
-        private List<Material> m_materialsFound = new();
-        private List<Material> m_toRefresh = new();
-        private List<Material> m_materialsVisible = new();
-        private List<Material> m_matAncestors = new();
-        private Material m_SGchild;
-        private string m_searchQuery;
-        private string m_filteredProperty;
-        private string m_filteredPropertyName;
-        private int m_materialsFoundCount;
-        private int m_materialsReparentedCount;
-        private int m_variantsFilteredCount;
-        private string m_shaderAssetPath;
+        private List<Material> _materialsFound = new();
+        private List<Material> _toRefresh = new();
+        private List<Material> _materialsVisible = new();
+        private List<Material> _matAncestors = new();
+        private Material _SGchild;
+        private string _searchQuery;
+        private string _filteredProperty;
+        private string _filteredPropertyName;
+        private int _materialsFoundCount;
+        private int _materialsReparentedCount;
+        private int _variantsFilteredCount;
+        private string _shaderAssetPath;
 
-        private Dictionary<string, object> m_TestPropertiesDic;
+        private Dictionary<string, object> _TestPropertiesDic;
     
         #endregion
         #region STATES VARIABLES
 
-        private bool m_showReparentedMaterials;
-        private bool m_ignoreSearchField = true;
-        private bool m_skipClear;
+        private bool _showReparentedMaterials;
+        private bool _ignoreSearchField = true;
+        private bool _skipClear;
 
         #endregion
         #region SETTINGS VARIABLES
 
-        private double m_delayStartTime;
+        private double _delayStartTime;
         private const double DelayDuration = 1;
         private const string DefaultSearchField = "Search materials...";
         private const string DefaultFolderPath = "Assets";
@@ -47,42 +47,42 @@ namespace MaterialManager.Scripts.Editor
         #region UI-TOOLKIT VARIABLES
 
         // OBJECT FIELD
-        private ObjectField m_shaderField;
-        private ObjectField m_newShaderField;
+        private ObjectField _shaderField;
+        private ObjectField _newShaderField;
         // TEXT FIELD
-        private TextField m_searchField;
+        private TextField _searchField;
         // LABEL
-        private Label m_materialsCountLabel;
-        private Label m_variantsCountLabel;
-        private Label m_reparentCountLabel;
-        private Label m_folderPathLabel;
+        private Label _materialsCountLabel;
+        private Label _variantsCountLabel;
+        private Label _reparentCountLabel;
+        private Label _folderPathLabel;
         // BUTTON
-        private Button m_findMaterialsButton;
-        private Button m_clearSearchButton;
-        private Button m_selectVisibleButton;
-        private Button m_selectAllButton;
-        private Button m_filterPropertyButton;
-        private Button m_clearFilteredPropertyButton;
-        private Button m_reparentButton;
-        private Button m_folderBrowseButton;
-        private Button m_folderDefaultButton;
-        private Button m_rebindPropertiesButton;
+        private Button _findMaterialsButton;
+        private Button _clearSearchButton;
+        private Button _selectVisibleButton;
+        private Button _selectAllButton;
+        private Button _filterPropertyButton;
+        private Button _clearFilteredPropertyButton;
+        private Button _reparentButton;
+        private Button _folderBrowseButton;
+        private Button _folderDefaultButton;
+        private Button _rebindPropertiesButton;
         // TOGGLE
-        private Toggle m_showVariantsToggle;
-        private Toggle m_reparentToggle;
+        private Toggle _showVariantsToggle;
+        private Toggle _reparentToggle;
         // VISUAL ELEMENT
-        private VisualElement m_statsSection;
-        private VisualElement m_reparentButtonSection;
-        private VisualElement m_searchFieldText;
-        private VisualElement m_filtersSection;
-        private VisualElement m_folderPathSection;
+        private VisualElement _statsSection;
+        private VisualElement _reparentButtonSection;
+        private VisualElement _searchFieldText;
+        private VisualElement _filtersSection;
+        private VisualElement _folderPathSection;
         // OTHER
-        private ScrollView m_materialsScrollview;
-        private DropdownField m_searchInDropdown;
+        private ScrollView _materialsScrollview;
+        private DropdownField _searchInDropdown;
     
         #endregion
     
-        [MenuItem("OSG/Material Manager %m", false, 1)]
+        [MenuItem("Tools/Material Manager %m", false, 1)]
         public static void OpenEditorWindow()
         {
             MaterialManager wnd = GetWindow<MaterialManager>();
@@ -97,64 +97,76 @@ namespace MaterialManager.Scripts.Editor
         
         private void CreateGUI()
         {
-            if (!EditorApplication.isUpdating) // Required to prevent import errors via PackageManager
+            if (EditorApplication.isUpdating == false) // Required to prevent import errors via PackageManager
             {
+                LoadUIElements();
+                RegisterCallbacks();
+                SubscribeToEvents();
+
+                InitGUI();
+            }
+        }
+
+        #region INIT GUI
+
+                private void LoadUIElements()
+        {
                 VisualTreeAsset visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
                 visualTree.CloneTree(rootVisualElement);
                 VisualElement root = rootVisualElement.ElementAt(0);
 
                 // ASSIGN ELEMENTS
-                m_shaderField = root.Q<ObjectField>("shader-field");
-                m_findMaterialsButton = root.Q<Button>("find-materials-button");
-                m_materialsScrollview = root.Q<ScrollView>("materials-scrollview");
-                m_searchField = root.Q<TextField>("search-field");
-                m_showVariantsToggle = root.Q<Toggle>("show-variants-toggle");
-                m_clearSearchButton = root.Q<Button>("clear-search-button");
-                m_reparentButton = root.Q<Button>("reparent-button");
-                m_materialsCountLabel = root.Q<Label>("stat-materials-count-label");
-                m_variantsCountLabel = root.Q<Label>("stat-variant-count-label");
-                m_reparentCountLabel = root.Q<Label>("stat-reparent-count-label");
-                m_statsSection = root.Q<VisualElement>("stats-section");
-                m_selectAllButton = root.Q<Button>("select-all-button");
-                m_selectVisibleButton = root.Q<Button>("select-visible-button");
-                m_filterPropertyButton = root.Q<Button>("filter-property-button");
-                m_clearFilteredPropertyButton = root.Q<Button>("clear-filter-property-button");
-                m_filtersSection = root.Q<VisualElement>("filters-section");
-                m_searchInDropdown = root.Q<DropdownField>("search-in-dropdown");
-                m_folderPathSection = root.Q<VisualElement>("folder-path-section");
-                m_reparentButtonSection = root.Q<VisualElement>("reparent-button-section");
-                m_newShaderField = root.Q<ObjectField>("new-shader-field");
-                m_reparentToggle = root.Q<Toggle>("reparent-toggle");
-                m_folderBrowseButton = root.Q<Button>("folder-browse-button");
-                m_folderDefaultButton = root.Q<Button>("folder-default-button");
-                m_folderPathLabel = root.Q<Label>("folder-path-label");
-                m_rebindPropertiesButton = root.Q<Button>("rebind-properties-button");
+                _shaderField = root.Q<ObjectField>("shader-field");
+                _findMaterialsButton = root.Q<Button>("find-materials-button");
+                _materialsScrollview = root.Q<ScrollView>("materials-scrollview");
+                _searchField = root.Q<TextField>("search-field");
+                _showVariantsToggle = root.Q<Toggle>("show-variants-toggle");
+                _clearSearchButton = root.Q<Button>("clear-search-button");
+                _reparentButton = root.Q<Button>("reparent-button");
+                _materialsCountLabel = root.Q<Label>("stat-materials-count-label");
+                _variantsCountLabel = root.Q<Label>("stat-variant-count-label");
+                _reparentCountLabel = root.Q<Label>("stat-reparent-count-label");
+                _statsSection = root.Q<VisualElement>("stats-section");
+                _selectAllButton = root.Q<Button>("select-all-button");
+                _selectVisibleButton = root.Q<Button>("select-visible-button");
+                _filterPropertyButton = root.Q<Button>("filter-property-button");
+                _clearFilteredPropertyButton = root.Q<Button>("clear-filter-property-button");
+                _filtersSection = root.Q<VisualElement>("filters-section");
+                _searchInDropdown = root.Q<DropdownField>("search-in-dropdown");
+                _folderPathSection = root.Q<VisualElement>("folder-path-section");
+                _reparentButtonSection = root.Q<VisualElement>("reparent-button-section");
+                _newShaderField = root.Q<ObjectField>("new-shader-field");
+                _reparentToggle = root.Q<Toggle>("reparent-toggle");
+                _folderBrowseButton = root.Q<Button>("folder-browse-button");
+                _folderDefaultButton = root.Q<Button>("folder-default-button");
+                _folderPathLabel = root.Q<Label>("folder-path-label");
+                _rebindPropertiesButton = root.Q<Button>("rebind-properties-button");
+        }
 
-                // CALLBCKS
-                m_shaderField.RegisterValueChangedCallback(ShaderField_Changed);
-                m_newShaderField.RegisterValueChangedCallback(NewShaderField_Changed);
-                m_searchField.RegisterValueChangedCallback(SearchField_Changed);
-                m_showVariantsToggle.RegisterValueChangedCallback(ShowVariantsToggle_Changed);
-                m_searchInDropdown.RegisterValueChangedCallback(SearchIn_Changed);
+        private void RegisterCallbacks()
+        {
+            _shaderField.RegisterValueChangedCallback(ShaderField_Changed);
+            _newShaderField.RegisterValueChangedCallback(NewShaderField_Changed);
+            _searchField.RegisterValueChangedCallback(SearchField_Changed);
+            _showVariantsToggle.RegisterValueChangedCallback(ShowVariantsToggle_Changed);
+            _searchInDropdown.RegisterValueChangedCallback(SearchIn_Changed);
+            
+            _searchField.RegisterCallback<FocusInEvent>(SearchField_FocusIn);
+            _searchField.RegisterCallback<FocusOutEvent>(SearchField_FocusOut);
+        }
 
-                // EVENTS
-                m_findMaterialsButton.clicked += FindMaterials;
-                m_reparentButton.clicked += ReparentMaterialsToNewShader;
-                m_clearSearchButton.clicked += ClearSearchButton;
-                m_selectVisibleButton.clicked += SelectVisibleMaterialsButton;
-                m_selectAllButton.clicked += SelectAllMaterialsButton;
-                m_filterPropertyButton.clicked += OpenPropertyButtonFilter;
-                m_clearFilteredPropertyButton.clicked += ClearFilteredPropertyButton;
-                m_folderBrowseButton.clicked += BrowseFolderPathButton;
-                m_folderDefaultButton.clicked += DefaultFolderPathButton;
-                m_rebindPropertiesButton.clicked += RebindPropertiesButton;
-
-                m_searchField.RegisterCallback<FocusInEvent>(SearchField_FocusIn);
-                m_searchField.RegisterCallback<FocusOutEvent>(SearchField_FocusOut);
-
-                //INIT
-                InitGUI();
-            }
+        private void SubscribeToEvents()
+        {
+            _findMaterialsButton.clicked += FindMaterials;
+            _reparentButton.clicked += ReparentMaterialsToNewShader;
+            _clearSearchButton.clicked += ClearSearchButton;
+            _selectVisibleButton.clicked += SelectVisibleMaterialsButton;
+            _selectAllButton.clicked += SelectAllMaterialsButton;
+            _filterPropertyButton.clicked += OpenPropertyButtonFilter;
+            _clearFilteredPropertyButton.clicked += ClearFilteredPropertyButton;
+            _folderBrowseButton.clicked += BrowseFolderPathButton;
+            _folderDefaultButton.clicked += DefaultFolderPathButton;
+            _rebindPropertiesButton.clicked += RebindPropertiesButton;
         }
 
         private void InitGUI()
@@ -162,42 +174,47 @@ namespace MaterialManager.Scripts.Editor
             LoadSettings();
         
             // SHADER TO FIND
-            if (m_shaderField.value != null) // FindMaterials on tool start if any shader had been saved
+            if (_shaderField.value != null) // FindMaterials on tool start if any shader had been saved
             {
                 FindMaterials();
             }
-            else // If no shader had been saved sets everything has disabled by default
+            else // If no shader had been saved sets everything as disabled by default
             {
-                m_findMaterialsButton.SetEnabled(false);
-                m_selectAllButton.SetEnabled(false);
-                m_selectVisibleButton.SetEnabled(false);
-                m_filtersSection.SetEnabled(false);
+                _findMaterialsButton.SetEnabled(false);
+                _selectAllButton.SetEnabled(false);
+                _selectVisibleButton.SetEnabled(false);
+                _filtersSection.SetEnabled(false);
             }
         
             // SEARCH FIELD
-            m_searchField.value = DefaultSearchField;
+            _searchField.value = DefaultSearchField;
             // Find internal child and sets up its default class as placeholder
-            m_searchFieldText = FindChild(m_searchField, "unity-text-element");
-            m_searchFieldText.RemoveFromClassList("unity-text-element");
-            m_searchFieldText.AddToClassList("search-field-placeholder");
+            _searchFieldText = FindChild(_searchField, "unity-text-element");
+            _searchFieldText.RemoveFromClassList("unity-text-element");
+            _searchFieldText.AddToClassList("search-field-placeholder");
+            
+            // TODO : Enable rebind button once working
+            _rebindPropertiesButton.SetEnabled(false);
         }
+
+        #endregion INIT GUI
     
         #region CALLBACKS
 
         private void NewShaderField_Changed(ChangeEvent<Object> evt)
         {
-            DisplayUIElement(m_reparentButtonSection, m_newShaderField.value != null && m_shaderField.value != null);
+            DisplayUIElement(_reparentButtonSection, _newShaderField.value != null && _shaderField.value != null);
         }
 
         private void SearchIn_Changed(ChangeEvent<string> evt)
         {
-            switch (m_searchInDropdown.index)
+            switch (_searchInDropdown.index)
             {
                 case 0:
-                    m_folderPathSection.style.display = DisplayStyle.Flex;
+                    _folderPathSection.style.display = DisplayStyle.Flex;
                     break;
                 case 1:
-                    m_folderPathSection.style.display = DisplayStyle.None;
+                    _folderPathSection.style.display = DisplayStyle.None;
                     break;
             }
         }
@@ -205,11 +222,11 @@ namespace MaterialManager.Scripts.Editor
         private void ShaderField_Changed(ChangeEvent<Object> evt)
         {
             Debug.LogWarning("Shader changed");
-            m_findMaterialsButton.SetEnabled(m_shaderField.value != null);
-            DisplayUIElement(m_reparentButtonSection, m_newShaderField.value != null && m_shaderField.value != null);
-            if (m_skipClear)
+            _findMaterialsButton.SetEnabled(_shaderField.value != null);
+            DisplayUIElement(_reparentButtonSection, _newShaderField.value != null && _shaderField.value != null);
+            if (_skipClear)
             {
-                m_skipClear = false;
+                _skipClear = false;
                 return;
             }
             FindMaterial_Clear();
@@ -217,13 +234,13 @@ namespace MaterialManager.Scripts.Editor
     
         private void SearchField_Changed(ChangeEvent<String> evt)
         {
-            if (m_ignoreSearchField)
+            if (_ignoreSearchField)
             {
-                m_ignoreSearchField = false;
+                _ignoreSearchField = false;
             }
             else
             {
-                m_searchQuery = evt.newValue;
+                _searchQuery = evt.newValue;
                 DisplayMaterialsList();
             }
         }
@@ -238,37 +255,37 @@ namespace MaterialManager.Scripts.Editor
 
         private void SearchField_FocusIn(FocusInEvent evt)
         {
-            if (m_searchField.value == DefaultSearchField) // On FocusIn check if there is default text or user search
+            if (_searchField.value == DefaultSearchField) // On FocusIn check if there is default text or user search
             {
                 // If default search then remove it and sets its class to user search one
-                m_ignoreSearchField = true;
-                m_searchField.value = "";
-                m_searchFieldText.RemoveFromClassList("search-field-placeholder");
-                m_searchFieldText.AddToClassList("unity-text-element");
+                _ignoreSearchField = true;
+                _searchField.value = "";
+                _searchFieldText.RemoveFromClassList("search-field-placeholder");
+                _searchFieldText.AddToClassList("unity-text-element");
             }
         }
 
         private void SearchField_FocusOut(FocusOutEvent evt)
         {
-            if (string.IsNullOrEmpty(m_searchField.value))  // On FocusOut check if search field is blank
+            if (string.IsNullOrEmpty(_searchField.value))  // On FocusOut check if search field is blank
             {
                 // If blank then resets to default class and value
-                m_ignoreSearchField = true;
-                m_searchField.value = DefaultSearchField;
-                m_searchFieldText.AddToClassList("search-field-placeholder");
-                m_searchFieldText.RemoveFromClassList("unity-text-element");
+                _ignoreSearchField = true;
+                _searchField.value = DefaultSearchField;
+                _searchFieldText.AddToClassList("search-field-placeholder");
+                _searchFieldText.RemoveFromClassList("unity-text-element");
             }
         }
 
         private void ClearSearchButton()
         {
-            if (m_searchField.value != DefaultSearchField)
+            if (_searchField.value != DefaultSearchField)
             {
-                m_ignoreSearchField = true;
-                m_searchField.value = DefaultSearchField;
-                m_searchQuery = null;
-                m_searchFieldText.AddToClassList("search-field-placeholder");
-                m_searchFieldText.RemoveFromClassList("unity-text-element");
+                _ignoreSearchField = true;
+                _searchField.value = DefaultSearchField;
+                _searchQuery = null;
+                _searchFieldText.AddToClassList("search-field-placeholder");
+                _searchFieldText.RemoveFromClassList("unity-text-element");
 
                 DisplayMaterialsList();
             }
@@ -276,13 +293,13 @@ namespace MaterialManager.Scripts.Editor
     
         private void SelectAllMaterialsButton()
         {
-            Selection.objects = m_materialsFound.ToArray();
+            Selection.objects = _materialsFound.ToArray();
         }
 
         private void SelectVisibleMaterialsButton()
         {
             VisibleMaterials();
-            Selection.objects = m_materialsVisible.ToArray();
+            Selection.objects = _materialsVisible.ToArray();
         }
     
         private void BrowseFolderPathButton()
@@ -291,31 +308,31 @@ namespace MaterialManager.Scripts.Editor
             if (!string.IsNullOrEmpty(folderPath))
             {
                 string relativePath = folderPath.Replace(Application.dataPath, "Assets");
-                m_folderPathLabel.text = relativePath;
+                _folderPathLabel.text = relativePath;
             }
         }
         private void DefaultFolderPathButton()
         {
-            m_folderPathLabel.text = DefaultFolderPath;
+            _folderPathLabel.text = DefaultFolderPath;
         }
     
         private void ClearFilteredPropertyButton()
         {
-            m_filterPropertyButton.text = "Filter by property override";
-            m_filteredProperty = null;
-            m_filteredPropertyName = null;
-            m_clearFilteredPropertyButton.style.display = DisplayStyle.None;
+            _filterPropertyButton.text = "Filter by property override";
+            _filteredProperty = null;
+            _filteredPropertyName = null;
+            _clearFilteredPropertyButton.style.display = DisplayStyle.None;
             DisplayMaterialsList();
         }
 
         private void OpenPropertyButtonFilter()
         {
-            ShaderPropertyFilter.ShowWindow(m_shaderField.value, (propertyName, propertyDisplayName) =>
+            ShaderPropertyFilter.ShowWindow(_shaderField.value, (propertyName, propertyDisplayName) =>
             {
-                m_filteredProperty = propertyName;
-                m_filteredPropertyName = propertyDisplayName;
-                m_filterPropertyButton.text = m_filteredPropertyName;
-                m_clearFilteredPropertyButton.style.display = DisplayStyle.Flex;
+                _filteredProperty = propertyName;
+                _filteredPropertyName = propertyDisplayName;
+                _filterPropertyButton.text = _filteredPropertyName;
+                _clearFilteredPropertyButton.style.display = DisplayStyle.Flex;
                 DisplayMaterialsList();
             });
         }
@@ -342,7 +359,7 @@ namespace MaterialManager.Scripts.Editor
             }
 
             container.Add(materialField);
-            m_materialsScrollview.Add(container);
+            _materialsScrollview.Add(container);
 
             container.RegisterCallback<MouseDownEvent>(evt =>
             {
@@ -356,9 +373,9 @@ namespace MaterialManager.Scripts.Editor
 
         private void DisplayMaterialsList()
         {
-            m_materialsScrollview.Clear();
+            _materialsScrollview.Clear();
 
-            foreach (Material mat in m_materialsFound)
+            foreach (Material mat in _materialsFound)
             {
                 if (FilterVariants(mat) || FilterSearchField(mat) || FilterPropertyOverride(mat))
                 {
@@ -368,8 +385,8 @@ namespace MaterialManager.Scripts.Editor
                 DisplayToggledMaterialField(mat);
             }
         
-            m_selectVisibleButton.SetEnabled(m_materialsScrollview.contentContainer.childCount > 0);
-            m_filtersSection.SetEnabled(true);
+            _selectVisibleButton.SetEnabled(_materialsScrollview.contentContainer.childCount > 0);
+            _filtersSection.SetEnabled(true);
             DisplayStatsSection(true);
         }
 
@@ -377,32 +394,32 @@ namespace MaterialManager.Scripts.Editor
         {
             if (showStats)
             {
-                m_statsSection.style.display = DisplayStyle.Flex;
-                m_materialsCountLabel.text = "Materials Found: " + m_materialsFoundCount.ToString();
+                _statsSection.style.display = DisplayStyle.Flex;
+                _materialsCountLabel.text = "Materials Found: " + _materialsFoundCount.ToString();
 
-                if (m_variantsFilteredCount > 0)
+                if (_variantsFilteredCount > 0)
                 {
-                    m_variantsCountLabel.text = "Variant Children: " + m_variantsFilteredCount.ToString();
-                    m_variantsCountLabel.style.display = DisplayStyle.Flex;
+                    _variantsCountLabel.text = "Variant Children: " + _variantsFilteredCount.ToString();
+                    _variantsCountLabel.style.display = DisplayStyle.Flex;
                 }
                 else
                 {
-                    m_variantsCountLabel.style.display = DisplayStyle.None;
+                    _variantsCountLabel.style.display = DisplayStyle.None;
                 }
-                if (m_showReparentedMaterials)
+                if (_showReparentedMaterials)
                 {
-                    m_reparentCountLabel.text = "Materials Reparented: " + m_materialsReparentedCount.ToString();
-                    m_reparentCountLabel.style.display = DisplayStyle.Flex;
-                    m_showReparentedMaterials = false;
+                    _reparentCountLabel.text = "Materials Reparented: " + _materialsReparentedCount.ToString();
+                    _reparentCountLabel.style.display = DisplayStyle.Flex;
+                    _showReparentedMaterials = false;
                 }
                 else
                 {
-                    m_reparentCountLabel.style.display = DisplayStyle.None;
+                    _reparentCountLabel.style.display = DisplayStyle.None;
                 }
             }
             else
             {
-                m_statsSection.style.display = DisplayStyle.None;
+                _statsSection.style.display = DisplayStyle.None;
             }
         }
 
@@ -446,32 +463,32 @@ namespace MaterialManager.Scripts.Editor
 
         private bool FilterVariants(Material mat)
         {
-            return !m_showVariantsToggle.value && mat.isVariant && mat.parent != m_SGchild;
+            return !_showVariantsToggle.value && mat.isVariant && mat.parent != _SGchild;
         }
         private bool FilterSearchField(Material mat)
         {
-            return !string.IsNullOrEmpty(m_searchQuery) && !mat.name.ToLower().Contains(m_searchQuery.ToLower());
+            return !string.IsNullOrEmpty(_searchQuery) && !mat.name.ToLower().Contains(_searchQuery.ToLower());
         }
         private bool FilterPropertyOverride(Material mat)
         {
-            return !string.IsNullOrEmpty(m_filteredProperty) && !mat.IsPropertyOverriden(m_filteredProperty);
+            return !string.IsNullOrEmpty(_filteredProperty) && !mat.IsPropertyOverriden(_filteredProperty);
         }
 
         private void VisibleMaterials()
         {
-            m_materialsVisible.Clear();
+            _materialsVisible.Clear();
 
-            foreach (VisualElement container in m_materialsScrollview.Children())
+            foreach (VisualElement container in _materialsScrollview.Children())
             {
                 if (container.childCount > 0 && container[0] is ObjectField materialField && materialField.value is Material mat)
                 {
-                    bool isVariantFilteredOut = !m_showVariantsToggle.value && mat.isVariant && mat.parent != m_SGchild;
-                    bool isSearchFilteredOut = !string.IsNullOrEmpty(m_searchQuery) && !mat.name.ToLower().Contains(m_searchQuery.ToLower());
+                    bool isVariantFilteredOut = !_showVariantsToggle.value && mat.isVariant && mat.parent != _SGchild;
+                    bool isSearchFilteredOut = !string.IsNullOrEmpty(_searchQuery) && !mat.name.ToLower().Contains(_searchQuery.ToLower());
                     bool isFieldEnabled = materialField.enabledSelf;
 
                     if (!isVariantFilteredOut && !isSearchFilteredOut && isFieldEnabled)
                     {
-                        m_materialsVisible.Add(mat);
+                        _materialsVisible.Add(mat);
                     }
                 }
             }
@@ -486,10 +503,10 @@ namespace MaterialManager.Scripts.Editor
             AssetDatabase.Refresh();
             FindMaterial_Clear();
 
-            m_shaderAssetPath = AssetDatabase.GetAssetPath(m_shaderField.value);
-            m_SGchild = AssetDatabase.LoadAssetAtPath<Material>(m_shaderAssetPath);
+            _shaderAssetPath = AssetDatabase.GetAssetPath(_shaderField.value);
+            _SGchild = AssetDatabase.LoadAssetAtPath<Material>(_shaderAssetPath);
         
-            switch (m_searchInDropdown.index)
+            switch (_searchInDropdown.index)
             {
                 case 0:
                     FindMaterials_Path();
@@ -499,9 +516,9 @@ namespace MaterialManager.Scripts.Editor
                     break;
             }
         
-            m_materialsFoundCount = m_materialsFound.Count;
+            _materialsFoundCount = _materialsFound.Count;
         
-            m_selectAllButton.SetEnabled(m_materialsFoundCount > 0);
+            _selectAllButton.SetEnabled(_materialsFoundCount > 0);
             DisplayMaterialsList();
         }
     
@@ -522,7 +539,7 @@ namespace MaterialManager.Scripts.Editor
 
         private void FindMaterials_Path()
         {
-            string searchPath = !string.IsNullOrEmpty(m_folderPathLabel.text) ? m_folderPathLabel.text : "Assets";
+            string searchPath = !string.IsNullOrEmpty(_folderPathLabel.text) ? _folderPathLabel.text : "Assets";
             string[] guids = AssetDatabase.FindAssets("t:material", new[] { searchPath });
             foreach (string guid in guids)
             {
@@ -534,31 +551,31 @@ namespace MaterialManager.Scripts.Editor
     
         private void FindMaterials_AddToList(Material material)
         {
-            if (material != null && material.shader == m_shaderField.value && !m_materialsFound.Contains(material) && material != m_SGchild)
+            if (material != null && material.shader == _shaderField.value && !_materialsFound.Contains(material) && material != _SGchild)
             {
-                if (material.isVariant && material.parent != m_SGchild)
+                if (material.isVariant && material.parent != _SGchild)
                 {
-                    m_toRefresh.Add(material);
-                    m_variantsFilteredCount++;
+                    _toRefresh.Add(material);
+                    _variantsFilteredCount++;
                 }
-                m_materialsFound.Add(material);
+                _materialsFound.Add(material);
             }
         }
     
         private void FindMaterial_Clear()
         {
-            m_materialsFound.Clear();
-            m_toRefresh.Clear();
-            m_materialsVisible.Clear();
-            m_variantsFilteredCount = 0;
-            m_filteredProperty = null;
-            m_filteredPropertyName = null;
-            m_materialsScrollview.Clear();
+            _materialsFound.Clear();
+            _toRefresh.Clear();
+            _materialsVisible.Clear();
+            _variantsFilteredCount = 0;
+            _filteredProperty = null;
+            _filteredPropertyName = null;
+            _materialsScrollview.Clear();
             ClearSearchButton();
             DisplayStatsSection(false);
-            m_selectAllButton.SetEnabled(false);
-            m_selectVisibleButton.SetEnabled(false);
-            m_filtersSection.SetEnabled(false);
+            _selectAllButton.SetEnabled(false);
+            _selectVisibleButton.SetEnabled(false);
+            _filtersSection.SetEnabled(false);
         }
 
         #endregion
@@ -567,9 +584,9 @@ namespace MaterialManager.Scripts.Editor
 
         private void ReparentMaterialsToNewShader()
         {
-            m_materialsReparentedCount = 0;
+            _materialsReparentedCount = 0;
             
-            if (m_reparentToggle.value)
+            if (_reparentToggle.value)
             {
                 VisibleMaterials();
             }
@@ -577,41 +594,43 @@ namespace MaterialManager.Scripts.Editor
             FindAncestors();
             ReparentAncestors();
             
-            Selection.objects = m_toRefresh.ToArray();
-            m_showReparentedMaterials = true;
-            m_delayStartTime = EditorApplication.timeSinceStartup;
+            Selection.objects = _toRefresh.ToArray();
+            _showReparentedMaterials = true;
+            _delayStartTime = EditorApplication.timeSinceStartup;
             EditorApplication.update += DelayRefresh;
         }
 
+        // TODO : Implement rebind for ancestors and overidden properties of variants materials
         private void RebindPropertiesButton()
         {
-            ShaderPropertyRebind.ShowWindow(m_shaderField.value, m_newShaderField.value);
+            ShaderPropertyRebind.ShowWindow(_shaderField.value, _newShaderField.value);
             Debug.Log("Found " + ShaderPropertyRebind.ReboundRefs.Count + " properties to rebind");
         }
 
         private void FindAncestors()
         {
-            m_matAncestors.Clear();
-            foreach (Material mat in m_reparentToggle.value ? m_materialsVisible : m_materialsFound)
+            _matAncestors.Clear();
+            foreach (Material mat in _reparentToggle.value ? _materialsVisible : _materialsFound)
             {
                 Material currentMat = mat;
-                while (currentMat.isVariant && currentMat.parent != m_SGchild)
+                while (currentMat.isVariant && currentMat.parent != _SGchild)
                 {
                     currentMat = currentMat.parent;
                 }
 
-                if (!m_matAncestors.Contains(currentMat))
+                if (!_matAncestors.Contains(currentMat))
                 {
-                    m_matAncestors.Add(currentMat);
+                    _matAncestors.Add(currentMat);
                 }
             }
         }
+        
         private void ReparentAncestors()
         {
             Material newShaderMaterial =
-                AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GetAssetPath(m_newShaderField.value));
+                AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GetAssetPath(_newShaderField.value));
         
-            foreach (Material mat in m_matAncestors)
+            foreach (Material mat in _matAncestors)
             {
                 if (newShaderMaterial != null) // NEW SHADER IS SHADER GRAPH
                 {
@@ -623,7 +642,7 @@ namespace MaterialManager.Scripts.Editor
                     mat.shader = newShaderMaterial.shader;
                 }
                 
-                m_materialsReparentedCount++;
+                _materialsReparentedCount++;
             }
         }
 
@@ -631,13 +650,13 @@ namespace MaterialManager.Scripts.Editor
         {
             double currentTime = EditorApplication.timeSinceStartup;
 
-            if (currentTime - m_delayStartTime >= DelayDuration)
+            if (currentTime - _delayStartTime >= DelayDuration)
             {
                 EditorApplication.update -= DelayRefresh;
 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                Debug.Log("Materials have been reparented to new shader. Total Reparented: " + m_materialsReparentedCount);
+                Debug.Log("Materials have been reparented to new shader. Total Reparented: " + _materialsReparentedCount);
             
                 FindMaterials();
             }
@@ -649,27 +668,27 @@ namespace MaterialManager.Scripts.Editor
 
         void SaveSettings()
         {
-            if (!string.IsNullOrEmpty(m_folderPathLabel.text))
+            if (!string.IsNullOrEmpty(_folderPathLabel.text))
             {
-                EditorPrefs.SetString("ShaderManager_SearchFolder", m_folderPathLabel.text);
+                EditorPrefs.SetString("ShaderManager_SearchFolder", _folderPathLabel.text);
             }
 
-            EditorPrefs.SetString("ShaderManager_shaderField.value", AssetDatabase.GetAssetPath(m_shaderField.value));
+            EditorPrefs.SetString("ShaderManager_shaderField.value", AssetDatabase.GetAssetPath(_shaderField.value));
 
-            EditorPrefs.SetBool("ShaderManager_FilterState", m_showVariantsToggle.value);
+            EditorPrefs.SetBool("ShaderManager_FilterState", _showVariantsToggle.value);
         
-            EditorPrefs.SetInt("ShaderManager_SearchInOption", m_searchInDropdown.index);
+            EditorPrefs.SetInt("ShaderManager_SearchInOption", _searchInDropdown.index);
         }
         void LoadSettings()
         {
-            m_folderPathLabel.text = EditorPrefs.GetString("ShaderManager_SearchFolder", DefaultFolderPath);
+            _folderPathLabel.text = EditorPrefs.GetString("ShaderManager_SearchFolder", DefaultFolderPath);
 
             string shaderPath = EditorPrefs.GetString("ShaderManager_shaderField.value", "");
-            m_shaderField.value = AssetDatabase.LoadAssetAtPath<Shader>(shaderPath);
+            _shaderField.value = AssetDatabase.LoadAssetAtPath<Shader>(shaderPath);
 
-            m_showVariantsToggle.value = EditorPrefs.GetBool("ShaderManager_FilterState", true);
+            _showVariantsToggle.value = EditorPrefs.GetBool("ShaderManager_FilterState", true);
         
-            m_searchInDropdown.index = EditorPrefs.GetInt("ShaderManager_SearchInOption", 0);
+            _searchInDropdown.index = EditorPrefs.GetInt("ShaderManager_SearchInOption", 0);
         }
 
         #endregion
@@ -680,12 +699,12 @@ namespace MaterialManager.Scripts.Editor
         {
             if (shader == null) return;
             
-            m_searchInDropdown.index = 1;
+            _searchInDropdown.index = 1;
             
-            if (m_shaderField.value != shader)
+            if (_shaderField.value != shader)
             {
-                m_skipClear = true;
-                m_shaderField.value = shader;
+                _skipClear = true;
+                _shaderField.value = shader;
             }
 
             FindMaterials();
