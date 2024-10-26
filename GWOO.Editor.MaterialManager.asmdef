@@ -1,7 +1,7 @@
 {
     "name": "GWOO.Editor.MaterialManager",
     "rootNamespace": "",
-    "references": [],
+    "references": ["GUID:c36333e159275b049bd7587eaa153854","GUID:4af832a0062642c44bf49ec7d0eb1669"],
     "includePlatforms": [
         "Editor"
     ],

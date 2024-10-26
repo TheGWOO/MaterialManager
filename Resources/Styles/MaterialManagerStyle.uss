@@ -1,0 +1,161 @@
+:root {
+    --custom-colors-button-background: var(--custom-colors-main-lighten-12);
+    --custom-colors-button-border: var(--custom-colors-main-darken-4);
+    --custom-colors-button-background-hover: var(--custom-colors-main-lighten-17);
+    --custom-colors-button-background-pressed: var(--custom-colors-accent-alt-darken-2);
+    --custom-colors-button-text: var(--custom-colors-main-lighten-30);
+}
+
+.unity-group-box {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 5px;
+    padding-right: 3px;
+    padding-bottom: 5px;
+    padding-left: 3px;
+}
+
+/* BASE */
+.unity-button {
+    /*align-self: center;*/
+    background-color: var(--custom-colors-button-background);
+    border-radius: 5px;
+    min-height: 25px;
+    -unity-text-align: middle-center;
+
+    flex: 0 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 5px 3px 1px;
+    padding: 1px 6px;
+    border-color: var(--custom-colors-button-border);
+    border-width: 1px;
+}
+
+.unity-button:hover {
+    background-color: var(--custom-colors-button-background-hover);
+}
+
+.unity-button:disabled {
+    background-color: rgb(49, 51, 56);
+    opacity: 0.5;
+}
+
+.unity-button:active
+{
+    background-color: var(--custom-colors-button-background-pressed);
+    border-color: var(--transparent);
+}
+
+/* PRIMARY COLOR */
+.unity-button.primary-color {
+    background-color: var(--custom-colors-primary-lighten-1);
+}
+
+.unity-button.primary-color:hover {
+    background-color: var(--custom-colors-primary-lighten-2);
+}
+
+.unity-button.primary-color:active {
+    background-color: var(--custom-colors-primary-darken-1);
+}
+
+/* SECONDARY COLOR */
+.unity-button.secondary-color {
+    background-color: var(--custom-colors-secondary-lighten-1);
+}
+
+.unity-button.secondary-color:hover {
+    background-color: var(--custom-colors-secondary-lighten-2);
+}
+
+.unity-button.secondary-color:active {
+    background-color: var(--custom-colors-secondary-darken-1);
+}
+
+/* BIG */
+.unity-button.big {
+    height: 35px;
+    width: 75%;
+    transition-timing-function: ease-out-elastic;
+    transition-duration: 0.5s;
+    transition-property: scale;
+}
+
+.unity-button.big:hover {
+    scale: 1.1;
+}
+
+.unity-button.big:active {
+    scale: 1.05;
+}
+
+.unity-button.big:disabled:hover {
+    scale: 1;
+}
+
+/*TEXT*/
+Button.unity-text-element,
+.unity-button.unity-text-element {
+    color: var(--custom-colors-button-text);
+    -unity-font-definition: resource('Fonts/Lato/Lato-Bold SDF');
+    font-size: 13px;
+}
+
+.content-box {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.search-field-placeholder {
+    opacity: 0.5;
+    font-size: 13px;
+    -unity-font-definition: url("project://database/Assets/GWOO/Scripts/Editor/Tools/MaterialManager/Resources/Fonts/Lato-Italic%20SDF.asset?fileID=11400000&guid=c86034c92d41eee4b9fdc73ed982db9c&type=2#Lato-Italic SDF");
+}
+
+.unity-bg-color {
+    background-color: var(--custom-colors-main-lighten-1);
+}
+
+Toggle:checked:hover .unity-toggle__checkmark {
+    background-image: var(--custom-icon-toggle-checkmark);
+    -unity-background-image-tint-color: var(--custom-colors-toggle-checkmark-hover);
+}
+
+Toggle:checked .unity-toggle__checkmark {
+    background-image: var(--custom-icon-toggle-checkmark);
+    -unity-background-image-tint-color: var(--custom-colors-toggle-checkmark);
+}
+
+Toggle:hover .unity-toggle__checkmark {
+    border-top-width: 0.5px;
+    border-right-width: 0.5px;
+    border-bottom-width: 0.5px;
+    border-left-width: 0.5px;
+    border-top-color: var(--custom-colors-toggle-borders-hover);
+    border-right-color: var(--custom-colors-toggle-borders-hover);
+    border-bottom-color: var(--custom-colors-toggle-borders-hover);
+    border-left-color: var(--custom-colors-toggle-borders-hover);
+}
+
+Toggle .unity-toggle__checkmark {
+    border-left-color: var(--custom-colors-toggle-borders);
+    border-right-color: var(--custom-colors-toggle-borders);
+    border-top-color: var(--custom-colors-toggle-borders);
+    border-bottom-color: var(--custom-colors-toggle-borders);
+    background-image: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    background-color: var(--custom-colors-toggle-background);
+}
+
+.separator {
+    height: 1px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background-color: var(--custom-colors-separator);
+}

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GWOO.Editor.Utils;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -114,6 +115,9 @@ namespace GWOO.Editor.Tools
                 VisualTreeAsset visualTree = Resources.Load<VisualTreeAsset>("UIDocument/MaterialManager_EditorWindow");
                 visualTree.CloneTree(rootVisualElement);
                 VisualElement root = rootVisualElement.ElementAt(0);
+                
+                EditorCustomStyles.SetCustomStyleSheet(root);
+                EditorCustomStyles.SetCustomTheme(root);
 
                 // ASSIGN ELEMENTS
                 _shaderField = root.Q<ObjectField>("shader-field");
@@ -221,7 +225,6 @@ namespace GWOO.Editor.Tools
     
         private void ShaderField_Changed(ChangeEvent<Object> evt)
         {
-            Debug.LogWarning("Shader changed");
             _findMaterialsButton.SetEnabled(_shaderField.value != null);
             DisplayUIElement(_reparentButtonSection, _newShaderField.value != null && _shaderField.value != null);
             if (_skipClear)
@@ -343,13 +346,13 @@ namespace GWOO.Editor.Tools
 
         private void DisplayToggledMaterialField(Material mat)
         {
-            VisualElement container = new VisualElement();
-            ObjectField materialField = new ObjectField
+            VisualElement container = new();
+            ObjectField materialField = new()
             {
                 value = mat,
                 objectType = typeof(Material),
                 allowSceneObjects = true,
-                focusable = false
+                focusable = true
             };
         
             VisualElement button = FindChild(materialField, "unity-object-field__selector");

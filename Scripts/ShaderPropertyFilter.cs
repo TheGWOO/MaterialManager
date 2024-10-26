@@ -1,4 +1,5 @@
 using System;
+using GWOO.Editor.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -34,6 +35,9 @@ namespace GWOO.Editor.Tools
             // Charge le document UXML depuis le dossier Resources
             VisualTreeAsset visualTree = Resources.Load<VisualTreeAsset>("UIDocument/ShaderPropertyFilter");
             visualTree.CloneTree(rootVisualElement);
+            
+            EditorCustomStyles.SetCustomStyleSheet(rootVisualElement);
+            EditorCustomStyles.SetCustomTheme(rootVisualElement);
 
             // Assignations
             VisualTreeAssignations(rootVisualElement);
