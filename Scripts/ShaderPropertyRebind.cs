@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace GWOO.Tools
+namespace GWOO.Editor.Tools
 {
     public class ShaderPropertyRebind : ShaderPropertyFilter
     {

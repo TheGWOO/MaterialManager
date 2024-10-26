@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace GWOO.Tools
+namespace GWOO.Editor.Tools
 {
     public class MaterialManager : EditorWindow
     {
