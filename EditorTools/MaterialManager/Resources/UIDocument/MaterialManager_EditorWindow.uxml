@@ -1,0 +1,79 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/GWOO/EditorTools/MaterialManager/Resources/Styles/MaterialManagerStyle.uss?fileID=7433441132597879392&amp;guid=b79a7f53b39da9d4d86a4e41828cce4a&amp;type=3#MaterialManagerStyle" />
+    <ui:VisualElement name="Canva" style="align-items: stretch; justify-content: space-between; flex-shrink: 0; width: 100%; height: 100%; padding-top: 10px; padding-bottom: 10px;">
+        <ui:VisualElement name="Header" style="margin-bottom: 10px; flex-shrink: 0;">
+            <ui:VisualElement name="Search-in-section" class="content-box" style="flex-shrink: 0;">
+                <ui:VisualElement name="search-in-dropdown" style="flex-direction: row; align-items: center; justify-content: flex-end; flex-shrink: 0;">
+                    <ui:Label tabindex="-1" text="Search in:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="justify-content: center;" />
+                    <ui:DropdownField name="search-in-dropdown" choices="Folder, Scene" focusable="false" style="width: 100px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="folder-path-section" style="flex-direction: row; justify-content: space-between; margin-top: 5px; flex-shrink: 0;">
+                    <ui:VisualElement style="align-items: center; flex-direction: row; overflow: hidden; justify-content: space-around; flex-grow: 1;">
+                        <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                            <ui:Label text="Search folder:" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                            <ui:Label text="Assets" parse-escape-sequences="true" display-tooltip-when-elided="true" name="folder-path-label" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-direction: row; justify-content: flex-end;">
+                        <ui:Button text="Browse" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="false" name="folder-browse-button" />
+                        <ui:Button text="Default" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="false" name="folder-default-button" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="Separator" class="separator" style="height: 2px;" />
+            <ui:VisualElement name="FindMaterials-Section" class="content-box">
+                <uie:ObjectField label="Shader" name="shader-field" allow-scene-objects="false" type="UnityEngine.Shader, UnityEngine.CoreModule" focusable="false" style="margin-right: 10px; margin-left: 10px;" />
+                <ui:Button text="Find materials" parse-escape-sequences="true" display-tooltip-when-elided="true" name="find-materials-button" focusable="false" class="big" style="margin-right: 5px; margin-left: 5px; margin-top: 5px; margin-bottom: 5px; align-self: center;" />
+                <ui:VisualElement name="filters-section">
+                    <ui:VisualElement name="Filters-first-row" style="flex-direction: row; align-items: center;">
+                        <ui:VisualElement name="VisualElement" style="flex-grow: 1; min-width: 10%;">
+                            <ui:TextField name="search-field" focusable="true" value="Search materials..." style="margin-right: 0;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="VisualElement" style="flex-direction: row; align-items: center;">
+                            <ui:Button text="Clear" parse-escape-sequences="true" display-tooltip-when-elided="true" name="clear-search-button" focusable="false" />
+                            <ui:Toggle focusable="false" name="show-variants-toggle" value="true" />
+                            <ui:Label tabindex="-1" text="Show variants" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="Filters-second-row" style="flex-direction: row; justify-content: space-around; flex-shrink: 0;">
+                        <ui:Button text="Filter by property override" parse-escape-sequences="true" display-tooltip-when-elided="true" name="filter-property-button" focusable="false" style="flex-grow: 1;" />
+                        <ui:Button text="Clear filter" parse-escape-sequences="true" display-tooltip-when-elided="true" name="clear-filter-property-button" focusable="false" style="display: none;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Body" class="unity-bg-color" style="margin-right: 10px; margin-left: 10px; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; justify-content: flex-start; flex-grow: 1; min-height: 40px;">
+            <ui:ScrollView name="materials-scrollview" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Footer" style="margin-top: 5px; justify-content: flex-end; flex-shrink: 0;">
+            <ui:VisualElement name="Select-materials-section" class="content-box" style="align-items: center; flex-direction: row; justify-content: space-around;">
+                <ui:Button text="Select all" parse-escape-sequences="true" display-tooltip-when-elided="true" name="select-all-button" focusable="false" style="text-overflow: ellipsis; flex-grow: 1; width: 50%;" />
+                <ui:Button text="Select visible" parse-escape-sequences="true" display-tooltip-when-elided="true" name="select-visible-button" focusable="false" style="flex-grow: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="reparent-section">
+                <ui:VisualElement name="Separator" class="separator" style="height: 2px;" />
+                <ui:VisualElement name="new-shader-field-section" class="content-box" style="color: rgb(238, 238, 238);">
+                    <uie:ObjectField label="New shader" name="new-shader-field" allow-scene-objects="false" type="UnityEngine.Shader, UnityEngine.CoreModule" focusable="false" style="margin-right: 10px; margin-left: 10px;" />
+                    <ui:VisualElement name="reparent-button-section" style="align-items: center; align-self: center; width: 75%; display: none;">
+                        <ui:Button text="Reparent materials to new shader" parse-escape-sequences="true" display-tooltip-when-elided="true" name="reparent-button" focusable="false" class="big-button" style="margin-right: 5px; margin-left: 5px; margin-top: 5px; margin-bottom: 5px; width: 100%;" />
+                        <ui:VisualElement name="reparent-options" style="flex-grow: 1; flex-direction: row; align-items: center; justify-content: flex-start;">
+                            <ui:Button text="Rebind properties" parse-escape-sequences="true" display-tooltip-when-elided="true" name="rebind-properties-button" focusable="false" style="flex-shrink: 1; flex-grow: 1; width: 50%;" />
+                            <ui:VisualElement name="reparent-toggle-section" style="flex-direction: row; justify-content: space-around; flex-shrink: 1; width: 50%;">
+                                <ui:Toggle name="reparent-toggle" />
+                                <ui:Label text="Reparent only visible" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-shrink: 1;" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="stats-section" style="display: none;">
+                <ui:VisualElement name="Separator" class="separator" style="height: 2px;" />
+                <ui:VisualElement name="stats-content-section" class="content-box" style="flex-shrink: 0;">
+                    <ui:Label text="Materials found:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stat-materials-count-label" />
+                    <ui:Label text="Variant children:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stat-variant-count-label" />
+                    <ui:Label text="Variant children:" parse-escape-sequences="true" display-tooltip-when-elided="true" name="stat-reparent-count-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

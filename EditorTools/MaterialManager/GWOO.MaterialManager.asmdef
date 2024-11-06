@@ -1,0 +1,19 @@
+{
+    "name": "GWOO.Editor.MaterialManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4af832a0062642c44bf49ec7d0eb1669",
+        "GUID:67b0b62b014ab7040b8a75acdf15b464"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

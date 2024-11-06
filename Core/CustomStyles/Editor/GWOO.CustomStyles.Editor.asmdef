@@ -1,0 +1,16 @@
+{
+    "name": "GWOO.CustomStyles.Editor",
+    "rootNamespace": "",
+    "references": ["GUID:4af832a0062642c44bf49ec7d0eb1669"],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,9 @@
+@import url("UnityDefaultRuntimeTheme.tss");
+
+@import url("../Resources/Styles/CustomStyles.uss");
+@import url("../Resources/Styles/Palettes/CustomVariables.uss");
+@import url("../Resources/Styles/RuntimeStyles.uss");
+
+
+
+VisualElement {}
